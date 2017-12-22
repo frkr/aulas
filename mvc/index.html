@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Teste</title>
+		<script type="text/javascript" src="js/jquery/dist/jquery.js"></script>
+		<script type="text/javascript" src="js/jqueryui/jquery-ui.js"></script>
+		<link rel="stylesheet" href="js/jqueryui/themes/sunny/jquery-ui.css"/>
+
+		<link rel="stylesheet"         href="js/datatables/media/css/jquery.dataTables.css"/>
+		<script type="text/javascript"  src="js/datatables/media/js/jquery.dataTables.js"></script>
+
+		<script type="text/javascript">
+			$(function(){
+				$("#accordion").accordion();
+			});
+
+			$(function() {
+				var availableTags = [
+			    	"ActionScript",
+					"AppleScript",
+				    "Asp",
+			      	"BASIC",
+			      	"C",
+			      	"C++",
+			      	"Clojure",
+			      "COBOL",
+			      "ColdFusion",
+			      "Erlang",
+			      "Fortran",
+			      "Groovy",
+			      "Haskell",
+			      "Java",
+			      "JavaScript",
+			      "Lisp",
+			      "Perl",
+			      "PHP",
+			      "Python",
+			      "Ruby",
+			      "Scala",
+			      "Scheme"
+			    ];
+			    $( "#tags" ).autocomplete({
+			      source: availableTags
+			    });
+			  });
+
+			  var dataSet =[
+			  	 ["Motor","Roncador"]
+			  	,["Xuranha","Xupeta"]
+			  	];
+
+			  $(document).ready(function(){
+			  	$("#container").html('<table cellpadding="0" cellpadding="0" border="0" class="display" id="tabela"></table>');
+
+			  	$("#tabela").dataTable(
+			  		{
+			  			data: dataSet,
+			  			columns: [
+			  				 { "title": "Engine" }
+			  				,{ "title": "Browser"}
+			  				]
+			  		}
+			  		);
+			  });
+  		</script>
+	</head>
+
+	<body>
+
+		<div id="container"></div>
+
+		<br/><br/><br/><br/><br/>
+
+		<div class="ui-widget">
+			<label for="tags">Tags: </label>
+			<input id="tags">
+		</div>
+
+		<br/><br/><br/><br/><br/>
+
+		<div id="accordion">
+			<h3>Section 1</h3>
+			<p>
+				Content 1
+			</p>
+			<h3>Section 2</h3>
+			<p>
+				Content 2
+			</p>
+			<h3>Section 3</h3>
+			<p>
+				Content 3
+			</p>
+		</div>
+
+	</body>
+
+</html>

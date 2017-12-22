@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style type="text/css">
+    .main {
+        height:200px;
+        width:500px;
+        border:1px solid red;
+        display:flex;
+        display:-webkit-flex;
+        flex-flow: column-reverse;
+        -webkit-flex-flow: column-reverse;
+    }
+    
+    .main div {
+        border:1px solid blue;
+        margin:5px;
+        flex:auto;
+        -webkit-flex:auto;
+    }
+    
+    .main div.primeiro {
+        order:2;
+        -webkit-order:2;
+    }
+    .main div.segundo {
+        order:3;
+        -webkit-order:3;
+    }
+    .main div.terceiro {
+        order:1;
+        -webkit-order:1;
+    }
+    
+    div::first-letter {
+        color:red;
+        font-size:20px;
+    }
+    div::first-line {
+        font-weight:bold;
+    }
+    
+    div::selection {
+        background-color:yellow;
+    }
+    .main div:first-child {
+        color:yellow;
+    }
+    
+    .main div:nth-child(3) {
+        color:red;
+    }
+    </style>
+</head>
+<body>
+
+<div class="main">
+    <div class="primeiro">
+        Content 1
+    </div>
+    <div class="segundo">
+        Content 2
+    </div>
+    <div class="terceiro">
+        Content 3
+    </div>
+</div>
+
+</div>
+</body>
+</html>

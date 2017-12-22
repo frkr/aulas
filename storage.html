@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Testes</title>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+
+<script>
+	$(document).ready(function(){
+		if (typeof(Storage) != 'undefined') {
+		} else {
+			alert('sozzy brb');
+		}
+
+		$('#btnAddLocal').on('click',function(){
+			var key = $('#txtKey').val();
+			var value = $('#txtValue').val();
+
+			localStorage.setItem(key,value);
+		});
+
+		$('#btnDeleteLocal').on('click',function(){
+			var key = $('#txtKey').val();
+
+			localStorage.removeItem(key);
+		});
+
+		$('#btnAddSession').on('click',function(){
+			var key=$('#txtKey').val();
+			var value=$('#txtValue').val();
+
+			sessionStorage.setItem(key,value);
+		});
+
+		$('#btnDeleteSession').on('click',function(){
+			var key = $('#txtKey').val();
+
+			sessionStorage.removeItem(key);
+		});
+
+	});
+</script>
+
+<input type="text" id="txtKey"/>
+<input type="text" id="txtValue"/>
+
+<br/><br/>
+
+<input type="button" id="btnAddLocal" value="AddLocal"/>
+<input type="button" id="btnDeleteLocal" value="DeleteLocal"/>
+
+<br/><br/>
+
+<input type="button" id="btnAddSession" value="AddSession"/>
+<input type="button" id="btnDeleteSession" value="DeleteSession"/>
+
+
+</body>
+</html>

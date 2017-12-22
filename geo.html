@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Testes</title>
+</head>
+<body>
+
+<div id="container"></div>
+
+<script>
+	function success(geo) {
+		var latitude = geo.coords.latitude;
+		var longitude = geo.coords.longitude;
+
+		var img = new Image();
+		img.src = 'https://maps.googleapis.com/maps/api/staticmap?center='
+		+ latitude + ','
+		+ longitude
+		+ '&zoom=13&size=300x300&sensor=false';
+
+		document.getElementById('container').appendChild(img);
+	}
+
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(success);
+	} else {
+		alert('See geolocation is not supported');
+	}
+</script>
+
+</body>
+</html>

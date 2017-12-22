@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="js/jquery/dist/jquery.js"></script>
+</head>
+<body>
+    
+    <script type="text/javascript">
+    
+        $(document).ready(function(){
+            /*
+            $.get('bases.html',function(data){
+                $("#content").html(data);
+            }).error(function(){
+                $("#content").html('Deu bosta parça');
+            });
+            */
+            
+            /*
+            $("#content").load('http://www.microsoft.com.br img[title="Microsoft"]:first');
+            */
+            
+            var flickr = "http://api.flickr.com/services/feeds/"
+            +
+            "photos_public.gne?jsoncallback=?"
+            ;
+            
+            $.getJSON(flickr,{
+                tags:"mountains sun"
+                ,tagmode:"any"
+                ,format:"json"
+            }).done(function(data){
+                $.each(data.items, function(i, item){
+                    $("<img>").attr("src",item.media.m).appendTo("#content");
+                });
+            }).error(function(){
+                $("#content").html("deu bosta");
+            });
+            
+        });
+    </script>
+    
+    <div id="content"/>
+
+</body>
+</html>

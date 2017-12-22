@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Html Controls
+        </title>
+        <style type="text/css">
+            input:valid {
+                border-color:green;
+            }
+            input:invalid {
+                border-color:red;
+            }
+        </style>
+        <script type="text/javascript">
+            function validarForm() {
+                document.getElementById("txt1").setCustomValidity('Tah errado brow');
+                return false;
+            }
+        </script>
+    </head>
+    
+    <body>
+        <form onsubmit="return validarForm();">
+            Number
+            <input id="txt1" type="number" step="2" required placeholder="Digita ae" min="10" max="30" />
+            <br>
+            
+            Date
+            <input type="date" required min="2015-01-01" max="2015-01-15" />
+            <br/>
+            
+            Pattern:
+            <input type="text" required pattern="\d{1,4}" />
+            <br/>
+            
+            <br/>
+            <br/>
+            <input type="submit" />
+        </form>
+    </body>
+</html>

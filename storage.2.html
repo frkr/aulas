@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Testes</title>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+
+<script>
+	"use scrict";
+
+	window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+	window.indexedDB || alert('deu bosta parsa');
+	window.IDBTransaction || alert('usa hack fela');
+	window.IDBKeyRange || alert('usa hack fela');
+	window.IDBRequest || alert('usa hack fela');
+
+	//window.indexedDB.deleteDatabase("MyDatabase");
+
+	var db;
+
+	var dbRequest = window.indexedDB.open("MyDatabase",1); // @param versao @type inteiro
+
+	function err(event) {
+		console.log("onerror");
+		console.log(event);
+		alert('deu bosta das serias');
+	}
+	dbRequest.onerror = err;
+
+	function suc(event) {
+		console.log("onsuccess");
+		console.log(event);
+		alert("Sucesso");
+	}
+	function suc2(event) {
+		console.log("onsuccess");
+		console.log(event);
+		db = event.target.result;
+		alert("Sucesso");
+	}
+	dbRequest.onsuccess = suc2;
+
+	dbRequest.onupgradeneeded = function(event){
+		console.log("onupgradeneeded");
+		console.log(event);
+		db = event.target.result;
+
+		var objectStore = db.createObjectStore("customers",{keyPath: "id"});
+		objectStore.createIndex("idxname","name",{unique:false});
+
+		//objectStore.createIndex("idxteste",['name','date'],{unique:false});
+
+		console.log(objectStore);
+		alert("updagrade: " + objectStore);
+	};
+
+	$(document).ready(function(){
+		$('#btnAdd').on('click',function(){
+			var key = $('#txtKey').val();
+			var value = $('#txtValue').val();
+			var customerRow = {id: key,name:value, date: new Date().getTime()};
+
+			var transaction = db.transaction("customers",(IDBTransaction.READ_WRITE ? IDBTransaction.READ_WRITE : "readwrite"));
+			var objectStore = transaction.objectStore("customers");
+			var addResquest = objectStore.add(customerRow);
+
+			addResquest.onsuccess = suc;
+			addResquest.onerror = err;
+		});
+
+		$('#btnDelete').on('click',function(){
+			var key = $('#txtKey').val();
+
+			var transaction = db.transaction("customers",(IDBTransaction.READ_WRITE ? IDBTransaction.READ_WRITE : "readwrite"));
+			var objectStore = transaction.objectStore("customers");
+			var addResquest = objectStore.delete(key);
+
+			addResquest.onsuccess = suc;
+			addResquest.onerror = err;
+		});
+
+		$('#btnUpdate').on('click',function(){
+			var key = $('#txtKey').val();
+			var value = $('#txtValue').val();
+
+			var transaction = db.transaction("customers",(IDBTransaction.READ_WRITE ? IDBTransaction.READ_WRITE : "readwrite"));
+			var objectStore = transaction.objectStore("customers");
+			var addResquest = objectStore.get(key);
+
+			addResquest.onerror = err;
+			addResquest.onsuccess = function(event) {
+				var customerRow = event.target.result;
+
+				customerRow.name = value;
+				customerRow.date = new Date().getTime();
+
+				var requestUpdate = objectStore.put(customerRow);
+
+				// O success dah bosta com o DB
+				requestUpdate.onsuccess = function(event){console.log(event);};
+				requestUpdate.onerror = err;
+			};
+		});
+
+		$('#btnList').on('click',function(){
+			var transaction = db.transaction("customers",(IDBTransaction.READ_WRITE ? IDBTransaction.READ_WRITE : "readwrite"));
+			var objectStore = transaction.objectStore("customers");
+
+			var cursorRequest = objectStore.openCursor();
+
+			var html="<ul>";
+
+			cursorRequest.onerror=err;
+			cursorRequest.onsuccess=function(event){
+				var cursor = event.target.result;
+
+				if (cursor) {
+					html+="<li>" + cursor.value.id + ' - ' + cursor.value.name
+					+ ' - ' + cursor.value.date
+					+ '</li>';
+
+					cursor.continue();
+				}
+				else {
+					html +="</ul>";
+					$("#output").html(html);
+				}
+			};
+		});
+
+		$('#btnFdn').on('click',function(){
+			var key = $('#txtKey').val();
+			var value = $('#txtValue').val();
+
+			var transaction = db.transaction("customers",(IDBTransaction.READ_WRITE ? IDBTransaction.READ_WRITE : "readwrite"));
+			var objectStore = transaction.objectStore("customers");
+			var objectIndex = objectStore.index("idxname");
+
+			//var cursorRequest = objectIndex.openCursor(IDBKeyRange.only(value));
+			//var cursorRequest = objectIndex.openCursor(IDBKeyRange.bound(value,value+"\uffff"));
+
+			var cursorRequest = objectIndex.openCursor(IDBKeyRange.upperBound(value));
+
+			//IDBKeyRange.only
+			//IDBKeyRange.lowerBound(?) // o menor valor eh este, traz os maiores entao
+			//IDBKeyRange.lowerBound(?,true) // inclusive
+			//IDBKeyRange.upperBound(?) // o maior valor
+			//IDBKeyRange.upperBound(?,true) // inclusive
+			//IDBKeyRange.bound(?,?,false,true)
+
+			var html="<ul>";
+
+			cursorRequest.onerror=err;
+			cursorRequest.onsuccess=function(event){
+				var cursor = event.target.result;
+
+				if (cursor) {
+					html+="<li>" + cursor.value.id + ' - ' + cursor.value.name
+					+ ' - ' + cursor.value.date
+					+ '</li>';
+
+					cursor.continue();
+				}
+				else {
+					html +="</ul>";
+					$("#output").html(html);
+				}
+			};
+		});
+
+	});
+</script>
+
+<div id="output"></div>
+
+<input type="text" id="txtKey"/>
+<input type="text" id="txtValue"/>
+
+<br/><br/>
+
+<input type="button" id="btnAdd" value="Add"/>
+<input type="button" id="btnDelete" value="Delete"/>
+<input type="button" id="btnUpdate" value="Update"/>
+
+<input type="button" id="btnList" value="List"/>
+<input type="button" id="btnFdn" value="Find"/>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<tittle>Teste</tittle>
+</head>
+<body>
+
+<script>
+	"use strict";
+
+	/*
+	var obj={};
+	obj.id=1;
+	obj.name='People';
+	obj.toString = function (){return this.id + ' ' + this.name};
+
+	alert(obj+"");
+	*/
+
+	/*
+	var obj={
+		id:1,
+		name:'People',
+		toString:function (){return this.id + ' ' + this.name}
+	};
+
+	alert(obj+"");
+	*/
+
+	/*
+	var Account=function (id, name) {
+		this.id=id;
+		this.name=name;
+		this.balance=0;
+		this.numTransactions=0;
+	};
+	Account.prototype = {
+		deposit: function(amount) {
+			this.balance+=amount;
+			this.numTransactions++;
+		},
+		toString: function() {
+			return (
+				this.id
+				+ ' '
+				+ this.name
+				+ ' '
+				+ this.balance
+				+ ' '
+				+ this.numTransactions
+				);
+		}
+	}
+
+	alert(new Account(1,'nonono')+"");
+	*/
+
+
+/*
+	var Batata=function(id, name) {
+		var _id,_name,_balance=5,_numTransaction=0;
+
+		_id=id;
+
+		this.getId=function(){return _id};
+		this.setId=function(id){_id=id};
+
+		this.getBalance=function(){return _balance};
+
+	}
+
+	console.log(new Batata(1,'name').getId());
+
+	console.log(new Batata(1,'name').getBalance());
+
+*/
+
+var Person = function(name,age) {
+	this.name=name;
+	this.age=age;
+}
+Person.prototype = {
+	haveBirthday: function() {
+		this.age++;
+	}
+}
+
+var Student = function(name,age,subject) {
+	this.name=name;
+	this.age=age;
+	this.subject=subject;
+}
+
+Student.prototype = new Person();
+Student.prototype.constructor = Student;
+
+var aStudent = new Student("People",20,"Teacher");
+aStudent.haveBirthday();
+
+console.log(aStudent);
+
+
+console.log(Person);
+console.log(Student);
+</script>
+
+</div>
+</body>
+</html>

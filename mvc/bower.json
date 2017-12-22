@@ -1,0 +1,19 @@
+{
+  "name": "Aulas",
+  "homepage": "https://github.com/frkr/",
+  "authors": [
+    "Davi SM <davimesquita@gmail.com>"
+  ],
+  "description": "Aulas People Microsoft",
+  "main": "index.html",
+  "keywords": [
+    "index"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "jqueryui": "~1.11.4",
+    "datatables": "~1.10.9"
+  }
+}

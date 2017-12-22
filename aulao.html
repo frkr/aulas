@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<title>Aulao</title>
+    <script type="text/javascript" src="js/jquery/dist/jquery.js"></script>
+</head>
+<body>
+
+<table width="100%" border="1" cellpadding="2" cellspacing="0">
+	<tr>
+		<td colspan="2">My Chat</td>
+	</tr>
+	<tr>
+		<td>Setup</td>
+		<td>Messages</td>
+	</tr>
+	<tr>
+		<td>
+			<div id="state">ONLINE</div>
+			<button onclick="websocket.close();">Disconnect</button>
+		</td>
+		<td rowspan="7">
+			<div id="result" style="overflow-y:auto;height:800px"></div>
+		</td>
+	</tr>
+	<tr>
+		<td>Message</td>
+	</tr>
+	<tr>
+		<td>
+			<textarea id="txtMsg" cols="50" rows="5"></textarea>
+			<br/>
+			<button onclick="doSend($('#txtMsg').val());">Enviar</button>
+		</td>
+	</tr>
+	<tr><td>Media</td></tr>
+	<tr>
+		<td>
+			<input type="file" id="files" name="files[]" multiple />
+		</td>
+	</tr>
+	<tr><td>Geolocation</td></tr>
+	<tr>
+		<td>
+			<button onclick="enviarLocation()">Enviar</button>
+		</td>
+	</tr>
+</table>
+
+<script language="javascript" type="text/javascript">
+	var wsUri = "wss://echo.websocket.org/";
+	var output;
+
+	function init() {
+		output = document.getElementById("result");
+		testWebSocket();
+	}
+
+	function testWebSocket() {
+		websocket = new WebSocket(wsUri);
+		websocket.onopen = function(evt) {
+			onOpen(evt)
+		};
+		websocket.onclose = function(evt) {
+			onClose(evt)
+		};
+		websocket.onmessage = function(evt) {
+			onMessage(evt)
+		};
+		websocket.onerror = function(evt) {
+			onError(evt)
+		};
+	}
+
+	function onOpen(evt) {
+		writeToScreen("CONNECTED");
+		doSend("WebSocket rocks");
+	}
+
+	function onClose(evt) {
+		writeToScreen("DISCONNECTED");
+	}
+
+	function onMessage(evt) {
+		if (evt.data.indexOf("https://maps") != -1) {
+			writeToScreen('Location: <img src="' + evt.data +'"/>')
+		} else if (evt.data.indexOf("data:audio") != -1) {
+			writeToScreen('<audio controls autoplay><source src="'+evt.data+'" /></audio>');
+		} else if (evt.data.indexOf("data:video") != -1) {
+			writeToScreen('<video autoplay controls><source src="' +evt.data+ '" /></video>');
+		} else if (evt.data.indexOf("data:image") != -1) {
+			writeToScreen('<img src="' + evt.data + '" />');
+		} else {
+			writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+		}
+	}
+
+	function onError(evt) {
+		writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+	}
+
+	function doSend(message) {
+		//writeToScreen("SENT: " + message);
+		if (websocket.readyState == websocket.CLOSED || websocket.readyState == websocket.CLOSING) {
+			alert('deu ruim');
+		} else {
+			websocket.send(message);
+		}
+	}
+
+	function writeToScreen(message) {
+		var pre = document.createElement("p");
+		pre.style.wordWrap = "break-word";
+		pre.innerHTML = message;
+		output.appendChild(pre);
+	}
+	window.addEventListener("load", init, false);
+
+
+	// [INICIO GEO]
+	function gmap(geo) {
+		var latitude = geo.coords.latitude;
+		var longitude = geo.coords.longitude;
+
+		//var img = new Image();
+		var img = 'https://maps.googleapis.com/maps/api/staticmap?center='
+		+ latitude + ','
+		+ longitude
+		+ '&zoom=13&size=300x300&sensor=false';
+
+		doSend(img);
+	}
+
+	function enviarLocation(){
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(gmap);
+		} else {
+			alert('See geolocation is not supported');
+		}
+	}
+	// [/FIM GEO]
+
+	//[INICIO IMAGEM]
+	function handleFileSelect(evt) {
+		if (window.File && window.FileReader && window.FileList && window.Blob) {
+			var files = evt.target.files;
+			var output = [];
+			for (var i = 0, f;(f = files[i]); i++) {
+
+				if (!f.type.match('image.*') && !f.type.match('video.*') && !f.type.match('audio.*')) {
+					continue;
+				}
+
+				var reader = new FileReader();
+				reader.onload = (function(theFile) {
+					return function(e) {
+						console.log(e.target.result);
+						doSend(e.target.result);
+					}
+				})(f);
+
+				reader.readAsDataURL(f);
+			}
+		} else {
+			alert('the File APis are not fully supported in this browser.');
+		}
+	}
+	document.getElementById('files').addEventListener('change', handleFileSelect, false);
+	//[/FIM IMAGEM]
+
+	//[INICIO OFFLINE]
+	function updateOnlineStatus(msg) {
+		var condition = navigator.onLine ? "ONLINE" : "OFFLINE";
+		if (websocket.readyState == websocket.CLOSED || websocket.readyState == websocket.CLOSING) {
+			if (navigator.onLine) {
+				init();
+			}
+		}
+		var state = document.getElementById('state');
+		state.innerHTML=condition;
+	}
+
+	updateOnlineStatus("load");
+	window.addEventListener("offline",function(){ updateOnlineStatus("offline"); }, false);
+	window.addEventListener("online",function(){ updateOnlineStatus("online"); }, false);
+	//[/FIM OFFLINE	]
+
+
+
+</script>
+
+</body>
+</html>

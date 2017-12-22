@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Testes</title>
+</head>
+<body>
+
+<output id="out"></output>
+
+<script>
+	if (navigator.geolocation) {
+	} else {
+		error('See geolocation is not supported');
+	}
+
+	navigator.geolocation.getCurrentPosition(
+		myPositionCallbackFunction
+		,myPositionErrorCallbackFunction
+		,{ enableHighAccuracy:true,timeout:5000}
+		);
+
+	function myPositionCallbackFunction(geo) {
+		var div = document.getElementById('out');
+
+		div.innerHTML = (
+			'<pre>'
+			+ 'latitude: ' + geo.coords.latitude
+			+ '\n' + 'longitude: ' + geo.coords.longitude
+			+ '\n' + 'accuracy: ' + geo.coords.accuracy
+			+ '\n' + 'altitude: ' + geo.coords.altitude
+			+ '\n' + 'altitudeAccurary: ' + geo.coords.altitudeAccuracy
+			+ '\n' + 'heading: ' + geo.coords.heading
+			+ '\n' + 'speed: ' + geo.coords.speed
+			+ '</pre>'
+			);
+	}
+
+	function myPositionErrorCallbackFunction(error) {
+		var errorMessage = error.message;
+		var errorCode = error.code;
+
+		alert(errorCode + '::' + errorMessage);
+	}
+</script>
+
+</body>
+</html>

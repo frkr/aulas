@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Teste</title>
+</head>
+
+<body>
+
+	<div id="drop_zone">Dropa aqui</div>
+
+	<output id="list"></output>
+
+	<script>
+		if (window.File && window.FileReader && window.FileList && window.Blob) {}
+		else {
+			alert('the File APis are not fully supported in this browser.');
+		}
+
+		function handleFileSelect(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+
+			var files = evt.dataTransfer.files;
+			var output = [];
+			for (var i = 0, f;(f = files[i]); i++) {
+
+				if (!f.type.match('image.*')) {
+					continue;
+				}
+
+				var reader = new FileReader();
+				reader.onload = (function(theFile) {
+					return function(e) {
+						var span = document.createElement('span');
+						span.innerHTML = ['<img class="thumb" src="', e.target.result, '" tittle="', escape(theFile.name), '"/>'].join('');
+
+						//span.innerText = e.target.result;
+						document.getElementById("list").insertBefore(span, null);
+					}
+				})(f);
+
+				reader.readAsDataURL(f);
+
+			}
+
+		}
+		function handleDragOver(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+			evt.dataTransfer.dropEffect = 'copy';
+		}
+
+		var dropZone = document.getElementById("drop_zone");
+		dropZone.addEventListener('dragover',handleDragOver,false);
+		dropZone.addEventListener('drop',handleFileSelect,false);
+
+	</script>
+</body>
+
+</html>

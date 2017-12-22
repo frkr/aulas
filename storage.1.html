@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Testes</title>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+
+<script>
+	"use strict";
+	var db = openDatabase("MySqlDatabase","1.0","Teste Web SQL Database", 2 * 1024 * 1024);
+
+	if (!db) {
+		alert("deu bosta parsa");
+	}
+
+	var suc = function(t,result) {
+		console.log(result);
+	};
+	var err = function(t,error) {
+		console.log(error);
+	};
+
+	db.transaction(function(t){
+		t.executeSql("CREATE TABLE customers (id UNIQUE, name TEXT)",null,suc,err);
+	});
+
+	$(document).ready(function(){
+		$('#btnAdd').on('click',function(){
+			var key = $('#txtKey').val();
+			var value = $('#txtValue').val();
+
+			db.transaction(function(t){
+				t.executeSql("INSERT INTO customers (id,name) VALUES (?,?)",[key,value],suc,err);
+			});
+		});
+
+		$('#btnDelete').on('click',function(){
+			var key = $('#txtKey').val();
+
+			db.transaction(function(t){
+				t.executeSql("DELETE FROM customers WHERE id = ?",[key],suc,err);
+			});
+		});
+
+		$('#btnUpdate').on('click',function(){
+			var key = $('#txtKey').val();
+			var value = $('#txtValue').val();
+
+			db.transaction(function(t){
+				t.executeSql("UPDATE customers SET name = ? WHERE id = ?",[value,key],suc,err);
+			});
+		});
+
+		$('#btnList').on('click',function(){
+			db.transaction(function(t){
+				t.executeSql("SELECT * FROM customers",null,function(t,r){
+					var html = '<ul>';
+
+					for (var i=0;i<r.rows.length;i++) {
+						html += '<li>'
+							+ r.rows[i]['id']
+							+ ' | '
+							+ r.rows[i]['name']
+							+'</li>';
+					}
+
+					html+="</ul>";
+
+					$("#output").html(html);
+				},err);
+			});
+		});
+
+	});
+</script>
+
+<div id="output"></div>
+
+<input type="text" id="txtKey"/>
+<input type="text" id="txtValue"/>
+
+<br/><br/>
+
+<input type="button" id="btnAdd" value="Add"/>
+<input type="button" id="btnDelete" value="Delete"/>
+<input type="button" id="btnUpdate" value="Update"/>
+
+<input type="button" id="btnList" value="List"/>
+
+</body>
+</html>

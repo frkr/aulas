@@ -1,0 +1,16 @@
+{
+  "name": "Aulas",
+  "homepage": "https://github.com/frkr/",
+  "authors": [
+    "Davi SM <davimesquita@gmail.com>"
+  ],
+  "description": "Aulas People Microsoft",
+  "main": "index.html",
+  "keywords": [
+    "index"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+  }
+}

@@ -1,0 +1,6 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <trans-unit id="1" maxbytes="14">
+        <source xml:lang="en">Hello World.</source>
+        <target xml:lang="pt-br">Olá Mundo.</target>
+    </trans-unit>
+</resources>
